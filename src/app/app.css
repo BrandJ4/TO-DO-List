@@ -1,16 +1,55 @@
-
 :host {
   display: block;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   min-height: 100vh;
   background: linear-gradient(to right, #cfbaf0, #fde4cf);
 }
 
+/* View Toggle */
+.view-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.toggle-btn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Admin View */
 .page-wrapper {
   display: flex;
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
+  flex: 1;
 }
 
 .form-container {
@@ -33,6 +72,7 @@
 .task-form mat-form-field {
   width: 100%;
 }
+
 .board-container {
   display: flex;
   justify-content: space-between;
@@ -45,7 +85,7 @@
   border-radius: 8px;
   padding: 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  min-height: 400px; /* <-- CORRECCIÓN CLAVE para el drag-drop */
+  min-height: 400px;
 }
 
 .column h2 {
@@ -59,12 +99,10 @@
 .task-card {
   margin-bottom: 10px;
   background: #ffffff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-  
-
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   display: flex;
-  justify-content: space-between; 
-  align-items: center; 
+  justify-content: space-between;
+  align-items: center;
   word-wrap: break-word;
   padding: 10px 15px;
 }
@@ -76,7 +114,6 @@
   color: #888;
 }
 
-
 .cdk-drag-placeholder {
   opacity: 0.2;
   border: 2px dashed #555;
@@ -84,6 +121,87 @@
 }
 
 .cdk-drag-preview {
-  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
+}
+
+/* User View */
+.user-view-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+app-user-dashboard {
+  width: 100%;
+  display: block;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .page-wrapper {
+    padding: 15px;
+  }
+
+  .form-container {
+    width: 30%;
+    min-width: 200px;
+    margin-right: 15px;
+  }
+
+  .board-container {
+    width: 70%;
+  }
+
+  .column {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .board-container {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .form-container {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-wrapper {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .form-container {
+    width: 100%;
+    padding: 10px;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .board-container {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .column {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .view-toggle {
+    flex-wrap: wrap;
+    padding: 10px;
+  }
+
+  .toggle-btn {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
 }

@@ -1,69 +1,93 @@
-<div class="page-wrapper">
-
-  <div class="form-container">
-    <h2>Administrador ✍</h2>
-    
-    <form class="task-form" [formGroup]="taskForm" (ngSubmit)="addTask()">
-      <mat-form-field appearance="outline">
-        <mat-label>Nueva tarea</mat-label>
-        <input matInput formControlName="title" placeholder="Hoy haremos...">
-      </mat-form-field>
-      
-      <button mat-flat-button color="primary" type="submit" [disabled]="!taskForm.valid">
-        Agregar
-      </button>
-    </form>
+<div class="app-container">
+  <!-- Toggle View Buttons -->
+  <div class="view-toggle">
+    <button mat-raised-button [color]="!showUserDashboard ? 'primary' : ''" (click)="showUserDashboard = false" class="toggle-btn">
+      <mat-icon>dashboard</mat-icon>
+      Administrador
+    </button>
+    <button mat-raised-button [color]="showUserDashboard ? 'primary' : ''" (click)="showUserDashboard = true" class="toggle-btn">
+      <mat-icon>person</mat-icon>
+      Trabajador
+    </button>
   </div>
-  <div class="board-container" cdkDropListGroup>
 
-    
-
-    <div class="column"
-         cdkDropList
-         #todoList="cdkDropList"
-         [cdkDropListData]="todo"
-         [cdkDropListConnectedTo]="[inProgressList, doneList]"
-         (cdkDropListDropped)="onDrop($event)">
+  <!-- Admin View (Kanban) -->
+  <div *ngIf="!showUserDashboard" class="page-wrapper">
+    <div class="form-container">
+      <h2>Administrador ✍</h2>
       
-      <h2>Ingeniería - {{todo.length}}</h2>
-      <mat-card *ngFor="let task of todo" class="task-card" cdkDrag>
-        <span>{{ task.title }}</span>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'todo')">
-          <mat-icon>delete_outline</mat-icon>
+      <form class="task-form" [formGroup]="taskForm" (ngSubmit)="addTask()">
+        <mat-form-field appearance="outline">
+          <mat-label>Nueva tarea</mat-label>
+          <input matInput formControlName="title" placeholder="Hoy haremos...">
+        </mat-form-field>
+        
+        <button mat-flat-button color="primary" type="submit" [disabled]="!taskForm.valid">
+          Agregar
         </button>
-      </mat-card>
+      </form>
     </div>
+    <div class="board-container" cdkDropListGroup>
+      <div class="column"
+           cdkDropList
+           #todoList="cdkDropList"
+           [cdkDropListData]="todo"
+           [cdkDropListConnectedTo]="[inProgressList, doneList]"
+           (cdkDropListDropped)="onDrop($event)">
+        
+        <h2>Ingeniería - {{todo.length}}</h2>
+        <mat-card *ngFor="let task of todo" class="task-card" cdkDrag>
+          <span>{{ task.title }}</span>
+          <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'todo')">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </mat-card>
+      </div>
 
-    <div class="column"
-         cdkDropList
-         #inProgressList="cdkDropList"
-         [cdkDropListData]="inProgress"
-         [cdkDropListConnectedTo]="[todoList, doneList]"
-         (cdkDropListDropped)="onDrop($event)">
+      <div class="column"
+           cdkDropList
+           #inProgressList="cdkDropList"
+           [cdkDropListData]="inProgress"
+           [cdkDropListConnectedTo]="[todoList, doneList]"
+           (cdkDropListDropped)="onDrop($event)">
 
-      <h2>Logística - {{inProgress.length}}</h2>
-      <mat-card *ngFor="let task of inProgress" class="task-card" cdkDrag>
-        <span>{{ task.title }}</span>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'inProgress')">
-          <mat-icon>delete_outline</mat-icon>
-        </button>
-      </mat-card>
+        <h2>Logística - {{inProgress.length}}</h2>
+        <mat-card *ngFor="let task of inProgress" class="task-card" cdkDrag>
+          <span>{{ task.title }}</span>
+          <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'inProgress')">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </mat-card>
+      </div>
+
+      <div class="column"
+           cdkDropList
+           #doneList="cdkDropList"
+           [cdkDropListData]="done"
+           [cdkDropListConnectedTo]="[todoList, inProgressList]"
+           (cdkDropListDropped)="onDrop($event)">
+
+        <h2>Marketing - {{done.length}}</h2>
+        <mat-card *ngFor="let task of done" class="task-card" cdkDrag>
+          <span>{{ task.title }}</span>
+          <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'done')">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </mat-card>
+      </div>
     </div>
+  </div>
 
-    <div class="column"
-         cdkDropList
-         #doneList="cdkDropList"
-         [cdkDropListData]="done"
-         [cdkDropListConnectedTo]="[todoList, inProgressList]"
-         (cdkDropListDropped)="onDrop($event)">
+  <!-- User Dashboard View -->
+  <div *ngIf="showUserDashboard" class="user-view-wrapper">
+    <app-user-dashboard 
+      [userName]="'Juan García'"
+      [userArea]="'Ingeniería'"
+      [tasks]="userTasks"
+      (taskStatusChanged)="onUserTaskStatusChanged($event)"
+      (taskDetailsRequested)="onViewTaskDetails($event)">
+    </app-user-dashboard>
+  </div>
+</div>
 
-      <h2>Marketing - {{done.length}}</h2>
-      <mat-card *ngFor="let task of done" class="task-card" cdkDrag>
-        <span>{{ task.title }}</span>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'done')">
-          <mat-icon>delete_outline</mat-icon>
-        </button>
-      </mat-card>
-    </div>
-
-  </div> </div> <router-outlet></router-outlet>
+<router-outlet></router-outlet>

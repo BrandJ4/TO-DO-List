@@ -1,0 +1,150 @@
+<div class="user-dashboard-wrapper">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="user-info">
+        <mat-icon class="user-icon">account_circle</mat-icon>
+        <div class="user-text">
+          <h2 class="user-name">{{ userName }}</h2>
+          <p class="user-area">{{ userArea }}</p>
+        </div>
+      </div>
+      <button mat-icon-button class="logout-btn">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-section">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-value">{{ getStatsCount('asignada') }}</div>
+        <div class="stat-label">Asignadas</div>
+        <mat-icon class="stat-icon">assignment</mat-icon>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-value">{{ getStatsCount('en_proceso') }}</div>
+        <div class="stat-label">En Proceso</div>
+        <mat-icon class="stat-icon">schedule</mat-icon>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-value">{{ getStatsCount('completada') }}</div>
+        <div class="stat-label">Completadas</div>
+        <mat-icon class="stat-icon">check_circle</mat-icon>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-value">${{ getTotalEstimatedPay() }}</div>
+        <div class="stat-label">Paga Estimada</div>
+        <mat-icon class="stat-icon">attach_money</mat-icon>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Tasks Section -->
+  <div class="tasks-section">
+    <h3 class="section-title">Mis Tareas</h3>
+
+    <!-- Tasks List -->
+    <div class="tasks-list">
+      <mat-card *ngFor="let task of tasks" class="task-card" [class.completed]="task.status === 'completada'">
+        <mat-card-header>
+          <div class="task-header">
+            <div class="task-title-section">
+              <h4 class="task-title">{{ task.title }}</h4>
+              <div class="task-meta">
+                <mat-chip-set aria-label="Task metadata">
+                  <mat-chip [style.backgroundColor]="getPriorityColor(task.priority)">
+                    {{ task.priority | uppercase }}
+                  </mat-chip>
+                  <mat-chip [style.backgroundColor]="'#7c3aed'">
+                    {{ task.area }}
+                  </mat-chip>
+                </mat-chip-set>
+              </div>
+            </div>
+            <div class="task-status">
+              <mat-icon [style.color]="getPriorityColor(task.priority)">{{ getStatusIcon(task.status) }}</mat-icon>
+              <span class="status-badge">{{ getStatusLabel(task.status) }}</span>
+            </div>
+          </div>
+        </mat-card-header>
+
+        <mat-card-content *ngIf="task.description" class="task-description">
+          {{ task.description }}
+        </mat-card-content>
+
+        <mat-card-content class="task-footer">
+          <div class="task-info">
+            <div class="info-item">
+              <mat-icon>calendar_today</mat-icon>
+              <span>{{ task.dueDate | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="info-item" *ngIf="task.estimatedPay">
+              <mat-icon>attach_money</mat-icon>
+              <span>${{ task.estimatedPay }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions>
+          <button
+            mat-raised-button
+            color="primary"
+            *ngIf="task.status === 'asignada'"
+            (click)="changeStatus(task, 'en_proceso')"
+            class="action-btn"
+          >
+            <mat-icon>play_arrow</mat-icon>
+            Iniciar
+          </button>
+
+          <button
+            mat-raised-button
+            color="accent"
+            *ngIf="task.status === 'en_proceso'"
+            (click)="changeStatus(task, 'completada')"
+            class="action-btn"
+          >
+            <mat-icon>check</mat-icon>
+            Completar
+          </button>
+
+          <button
+            mat-stroked-button
+            *ngIf="task.status === 'completada'"
+            disabled
+            class="action-btn"
+          >
+            <mat-icon>done_all</mat-icon>
+            Completada
+          </button>
+
+          <button
+            mat-icon-button
+            (click)="viewDetails(task.id)"
+            class="details-btn"
+            title="Ver detalles"
+          >
+            <mat-icon>info</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="tasks.length === 0" class="empty-state">
+      <mat-icon class="empty-icon">task_alt</mat-icon>
+      <p>No tienes tareas asignadas</p>
+    </div>
+  </div>
+</div>

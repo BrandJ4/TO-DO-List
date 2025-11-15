@@ -17,7 +17,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 
 
-import { MatIconModule } from '@angular/material/icon'; 
+import { MatIconModule } from '@angular/material/icon';
+import { UserDashboardComponent } from './user-dashboard/user-dashboard.component'; 
 
 
 export interface ITask {
@@ -36,13 +37,16 @@ export interface ITask {
     ReactiveFormsModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule 
+    MatIconModule,
+    UserDashboardComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.css' 
 })
 export class App { 
-  protected readonly title = signal('mi-tablero-kanban'); 
+  protected readonly title = signal('mi-tablero-kanban');
+  
+  showUserDashboard = false;
   
   private fb = inject(FormBuilder);
 
@@ -61,24 +65,72 @@ export class App {
   done: ITask[] = [
     
   ];
-Tarea: unknown;
+
+  // Mock data for user dashboard
+  userTasks = [
+    {
+      id: 1,
+      title: 'Revisar especificaciones del proyecto',
+      area: 'Ingeniería',
+      priority: 'alta' as const,
+      status: 'en_proceso' as const,
+      dueDate: '2025-11-15',
+      estimatedPay: 150,
+      description: 'Revisar los documentos de especificación técnica'
+    },
+    {
+      id: 2,
+      title: 'Implementar validaciones backend',
+      area: 'Ingeniería',
+      priority: 'alta' as const,
+      status: 'asignada' as const,
+      dueDate: '2025-11-16',
+      estimatedPay: 200,
+      description: 'Crear validaciones en los endpoints'
+    },
+    {
+      id: 3,
+      title: 'Documentación API',
+      area: 'Ingeniería',
+      priority: 'media' as const,
+      status: 'asignada' as const,
+      dueDate: '2025-11-18',
+      estimatedPay: 100,
+      description: 'Documentar endpoints principales'
+    }
+  ];
 
  
-  onDrop(event: CdkDragDrop<ITask[]>) {
-    if (event.previousContainer === event.container) {
-      // Mover en la misma lista
-      moveItemInArray(
-        event.container.data, 
-        event.previousIndex, 
-        event.currentIndex
-      );
-    } else {
-     
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
+  
+  deleteTask(taskToDelete: ITask, listName: 'todo' | 'inProgress' | 'done') {
+    switch (listName) {
+      case 'todo':
+        this.todo = this.todo.filter(task => task.id !== taskToDelete.id);
+        break;
+      case 'inProgress':
+        this.inProgress = this.inProgress.filter(task => task.id !== taskToDelete.id);
+        break;
+      case 'done':
+        this.done = this.done.filter(task => task.id !== taskToDelete.id);
+        break;
+    }
+  }
+
+  // User Dashboard handlers
+  onUserTaskStatusChanged(event: { taskId: number; newStatus: string }) {
+    const task = this.userTasks.find(t => t.id === event.taskId);
+    if (task) {
+      task.status = event.newStatus as any;
+    }
+  }
+
+  onViewTaskDetails(taskId: number) {
+    const task = this.userTasks.find(t => t.id === taskId);
+    if (task) {
+      alert(`Detalles de la tarea: ${task.title}\n\nDescripción: ${task.description}\n\nEstado: ${task.status}\n\nPaga: $${task.estimatedPay}`);
+    }
+  }
+}       event.currentIndex
       );
     }
   }
