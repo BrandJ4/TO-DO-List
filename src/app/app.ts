@@ -99,10 +99,47 @@ export class App {
       description: 'Documentar endpoints principales'
     }
   ];
-
  
-  
-  deleteTask(taskToDelete: ITask, listName: 'todo' | 'inProgress' | 'done') {
+// METODOS PARA EL MANEJO DE TAREAS   
+
+// 1. Agregar Tarea
+addTask(): void {
+    if (this.taskForm.valid) {
+      const newTitle = this.taskForm.value.title;
+      // Añadido chequeo de newTitle por si el FormBuilder devuelve null/undefined
+      if (newTitle) { 
+        const newTask: ITask = {
+          id: Date.now(),
+          title: newTitle
+        };
+        this.todo.unshift(newTask);
+        this.taskForm.reset();
+      }
+    }
+  }
+
+  // 2. Manejar Arrastre (Drag and Drop)
+  onDrop(event: CdkDragDrop<ITask[]>): void { // <-- **MÉTODO onDrop CORREGIDO Y EN SU LUGAR**
+    if (event.previousContainer === event.container) {
+      // Mover dentro de la misma lista
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else {
+      // Mover entre listas diferentes
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+  }
+
+// 3. Eliminar Tarea
+  deleteTask(taskToDelete: ITask, listName: 'todo' | 'inProgress' | 'done'): void {
     switch (listName) {
       case 'todo':
         this.todo = this.todo.filter(task => task.id !== taskToDelete.id);
@@ -116,26 +153,22 @@ export class App {
     }
   }
 
-  // User Dashboard handlers
-  onUserTaskStatusChanged(event: { taskId: number; newStatus: string }) {
+ onUserTaskStatusChanged(event: { taskId: number; newStatus: string }): void {
     const task = this.userTasks.find(t => t.id === event.taskId);
     if (task) {
       task.status = event.newStatus as any;
     }
   }
 
-  onViewTaskDetails(taskId: number) {
+  onViewTaskDetails(taskId: number): void {
     const task = this.userTasks.find(t => t.id === taskId);
     if (task) {
       alert(`Detalles de la tarea: ${task.title}\n\nDescripción: ${task.description}\n\nEstado: ${task.status}\n\nPaga: $${task.estimatedPay}`);
     }
   }
-}       event.currentIndex
-      );
-    }
-  }
+}
 
-  
+/*
   addTask() {
     if (this.taskForm.valid) {
       const newTitle = this.taskForm.value.title;
@@ -165,4 +198,4 @@ export class App {
         break;
     }
   }
-}
+}*/
