@@ -5,15 +5,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 
+// Definiciones de tipos del Admin (app.ts)
+export type Priority = 'Alta' | 'Media' | 'Baja';
+export type Area = 'INGENIERÍA' | 'LOGÍSTICA' | 'MARKETING';
+
+// Sincronización de la interfaz con ITask de app.ts
 export interface UserTask {
   id: number;
   title: string;
-  area: string;
-  priority: 'alta' | 'media' | 'baja';
+  area: Area; // Sincronizado con Area del Admin
+  priority: Priority; // Sincronizado con Priority del Admin
   status: 'asignada' | 'en_proceso' | 'completada';
-  dueDate?: string;
-  estimatedPay?: number;
-  description?: string;
+  dueDate: string;
+  estimatedPay: number;
+  description: string;
 }
 
 @Component({
@@ -30,58 +35,31 @@ export interface UserTask {
   styleUrl: './user-dashboard.component.css'
 })
 export class UserDashboardComponent {
-  @Input() userName: string = 'Juan García';
-  @Input() userArea: string = 'Ingeniería';
-  @Input() tasks: UserTask[] = [
-    {
-      id: 1,
-      title: 'Revisar especificaciones del proyecto',
-      area: 'Ingeniería',
-      priority: 'alta',
-      status: 'en_proceso',
-      dueDate: '2025-11-15',
-      estimatedPay: 150,
-      description: 'Revisar los documentos de especificación técnica'
-    },
-    {
-      id: 2,
-      title: 'Implementar validaciones backend',
-      area: 'Ingeniería',
-      priority: 'alta',
-      status: 'asignada',
-      dueDate: '2025-11-16',
-      estimatedPay: 200,
-      description: 'Crear validaciones en los endpoints'
-    },
-    {
-      id: 3,
-      title: 'Documentación API',
-      area: 'Ingeniería',
-      priority: 'media',
-      status: 'asignada',
-      dueDate: '2025-11-18',
-      estimatedPay: 100,
-      description: 'Documentar endpoints principales'
-    }
-  ];
+  // Las propiedades @Input recibirán los datos dinámicamente de app.ts
+  @Input() userName: string = 'Trabajador Asignado'; // Valor por defecto si no se pasa
+  @Input() userArea: Area = 'INGENIERÍA'; // Valor por defecto si no se pasa
+  @Input() tasks: UserTask[] = []; // <<-- AHORA SE INICIALIZA VACÍO -->>
 
+  // El evento de salida ahora usa el tipo de status correcto
   @Output() taskStatusChanged = new EventEmitter<{ taskId: number; newStatus: UserTask['status'] }>();
   @Output() taskDetailsRequested = new EventEmitter<number>();
 
-  getPriorityColor(priority: string): string {
+  // Helper para normalizar el color de prioridad (usando el tipo de Priority del Admin)
+  getPriorityColor(priority: Priority): string {
     switch (priority) {
-      case 'alta':
-        return '#d32f2f';
-      case 'media':
-        return '#f57c00';
-      case 'baja':
-        return '#388e3c';
+      case 'Alta':
+        return '#d32f2f'; // Rojo
+      case 'Media':
+        return '#f57c00'; // Naranja
+      case 'Baja':
+        return '#388e3c'; // Verde
       default:
-        return '#9e9e9e';
+        return '#9e9e9e'; // Gris
     }
   }
 
-  getStatusIcon(status: string): string {
+  // Helper para el ícono de estado
+  getStatusIcon(status: UserTask['status']): string {
     switch (status) {
       case 'asignada':
         return 'assignment';
@@ -94,7 +72,8 @@ export class UserDashboardComponent {
     }
   }
 
-  getStatusLabel(status: string): string {
+  // Helper para la etiqueta de estado
+  getStatusLabel(status: UserTask['status']): string {
     switch (status) {
       case 'asignada':
         return 'Asignada';
@@ -108,6 +87,9 @@ export class UserDashboardComponent {
   }
 
   changeStatus(task: UserTask, newStatus: UserTask['status']): void {
+    // Actualiza el estado localmente para reflejar el cambio inmediatamente
+    task.status = newStatus;
+    // Emite el evento para que el Admin (app.ts) pueda actualizar su lista y guardar
     this.taskStatusChanged.emit({ taskId: task.id, newStatus });
   }
 
@@ -124,6 +106,7 @@ export class UserDashboardComponent {
   }
 
   getTotalEstimatedPay(): number {
+    // Asegura que estimatedPay sea tratado como número
     return this.tasks.reduce((sum, task) => sum + (task.estimatedPay || 0), 0);
   }
 }

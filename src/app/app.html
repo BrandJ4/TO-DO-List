@@ -1,5 +1,4 @@
 <div class="app-container">
-  <!-- Toggle View Buttons -->
   <div class="view-toggle">
     <button mat-raised-button [color]="!showUserDashboard ? 'primary' : ''" (click)="showUserDashboard = false" class="toggle-btn">
       <mat-icon>dashboard</mat-icon>
@@ -11,60 +10,59 @@
     </button>
   </div>
 
-  <!-- Admin View (Kanban) -->
   <div *ngIf="!showUserDashboard" class="page-wrapper">
     <div class="form-container">
       <h2>Administrador ✍</h2>
       
       <form class="task-form" [formGroup]="taskForm" (ngSubmit)="addTask()">
-            <mat-form-field appearance="outline">
-                <mat-label>Título de la tarea</mat-label>
-                <input matInput formControlName="title" placeholder="Ej: Implementar Login">
-                <mat-error *ngIf="taskForm.get('title')?.hasError('required')">Título requerido</mat-error>
-            </mat-form-field>
-            
-            <mat-form-field appearance="outline">
-            <mat-label>Descripción</mat-label>
-            <textarea matInput 
-                      formControlName="description" 
-                      placeholder="Ej: Crear la ruta y la interfaz para el inicio de sesión..."
-                      rows="3"></textarea> <mat-error *ngIf="taskForm.get('description')?.hasError('required')">Descripción requerida</mat-error>
-            </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Título de la tarea</mat-label>
+          <input matInput formControlName="title" placeholder="Ej: Implementar Login">
+          <mat-error *ngIf="taskForm.get('title')?.hasError('required')">Título requerido</mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Descripción</mat-label>
+          <textarea matInput 
+            formControlName="description" 
+            placeholder="Ej: Crear la ruta y la interfaz para el inicio de sesión..."
+            rows="3"></textarea> <mat-error *ngIf="taskForm.get('description')?.hasError('required')">Descripción requerida</mat-error>
+        </mat-form-field>
 
-            <mat-form-field appearance="outline">
-                <mat-label>Área de Trabajo</mat-label>
-                <mat-select formControlName="area">
-                    <mat-option *ngFor="let area of availableAreas" [value]="area">
-                        {{ area }}
-                    </mat-option>
-                </mat-select>
-                <mat-error *ngIf="taskForm.get('area')?.hasError('required')">Área requerida</mat-error>
-            </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Área de Trabajo</mat-label>
+          <mat-select formControlName="area">
+            <mat-option *ngFor="let area of availableAreas" [value]="area">
+              {{ area }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="taskForm.get('area')?.hasError('required')">Área requerida</mat-error>
+        </mat-form-field>
 
-            <mat-form-field appearance="outline">
-                <mat-label>Prioridad</mat-label>
-                <mat-select formControlName="priority">
-                    <mat-option *ngFor="let priority of availablePriorities" [value]="priority">
-                        {{ priority }}
-                    </mat-option>
-                </mat-select>
-                <mat-error *ngIf="taskForm.get('priority')?.hasError('required')">Prioridad requerida</mat-error>
-            </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Prioridad</mat-label>
+          <mat-select formControlName="priority">
+            <mat-option *ngFor="let priority of availablePriorities" [value]="priority">
+              {{ priority }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="taskForm.get('priority')?.hasError('required')">Prioridad requerida</mat-error>
+        </mat-form-field>
 
-            <mat-form-field appearance="outline">
-                <mat-label>Fecha de Entrega</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="dueDate" [min]="minDate">
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-                <mat-error *ngIf="taskForm.get('dueDate')?.hasError('required')">Fecha requerida</mat-error>
-            </mat-form-field>
-            
-            <mat-form-field appearance="outline">
-                <mat-label>Pago Estimado (S/.)</mat-label>
-                <input matInput type="number" formControlName="estimatedPay" min="0">
-                <mat-error *ngIf="taskForm.get('estimatedPay')?.hasError('required')">Pago requerido</mat-error>
-                <mat-error *ngIf="taskForm.get('estimatedPay')?.hasError('min')">Debe ser 0 o más</mat-error>
-            </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha de Entrega</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dueDate" [min]="minDate">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="taskForm.get('dueDate')?.hasError('required')">Fecha requerida</mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Pago Estimado (S/.)</mat-label>
+          <input matInput type="number" formControlName="estimatedPay" min="0">
+          <mat-error *ngIf="taskForm.get('estimatedPay')?.hasError('required')">Pago requerido</mat-error>
+          <mat-error *ngIf="taskForm.get('estimatedPay')?.hasError('min')">Debe ser 0 o más</mat-error>
+        </mat-form-field>
         
         <button mat-flat-button color="primary" type="submit" [disabled]="!taskForm.valid">
           Agregar
@@ -73,432 +71,466 @@
     </div>
     <div class="board-container" cdkDropListGroup>
 
-    <div class="column">
-            <h2>INGENIERÍA - {{ ingenieriaAlta.length + ingenieriaMedia.length + ingenieriaBaja.length }}</h2>
+      <div class="column">
+        <h2>INGENIERÍA - {{ ingenieriaAlta.length + ingenieriaMedia.length + ingenieriaBaja.length }}</h2>
 
-            <div class="priority-header priority-Alta">ALTA PRIORIDAD</div>
-            <div cdkDropList 
-                #ingenieriaAltaList="cdkDropList"
-                [cdkDropListData]="ingenieriaAlta"
-                [cdkDropListConnectedTo]="[ingenieriaMediaList, ingenieriaBajaList]"
-                (cdkDropListDropped)="onDrop($event)">
-                
-                <mat-card *ngFor="let task of ingenieriaAlta; let i = index" 
-                          [ngClass]="'priority-' + task.priority" 
-                          class="task-card" 
-                          cdkDrag>
-                    <div class="task-title-row">
-        <span class="task-order">{{ i + 1 }}.</span> 
-        <span class="task-title">{{ task.title }}</span>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'ingenieriaAlta')"> 
-            <mat-icon class="icon-small-red">delete_outline</mat-icon>
-        </button>
-    </div>
-
-   <div class="task-tags-row">
-        <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
-            {{ task.priority | uppercase }}
-        </span>
-        
-        <span class="tag tag-area">
-            {{ task.area | titlecase }}
-        </span>
-    </div>
-
-    <div class="task-description">
-        {{ task.description }}
-    </div>
-
-    <div class="task-footer-row">
-        <span class="detail-due-date">
-            <mat-icon class="icon-small">calendar_today</mat-icon> 
-            {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
-
-        <span class="detail-pay">
-            S/ {{ task.estimatedPay }}
-        </span>
-    </div>
-                  
-                </mat-card>
+        <div class="priority-header priority-Alta">ALTA PRIORIDAD</div>
+        <div cdkDropList 
+          #ingenieriaAltaList="cdkDropList"
+          [cdkDropListData]="ingenieriaAlta"
+          [cdkDropListConnectedTo]="[ingenieriaMediaList, ingenieriaBajaList]"
+          (cdkDropListDropped)="onDrop($event)">
+          
+          <mat-card *ngFor="let task of ingenieriaAlta; let i = index" 
+            [ngClass]="'priority-' + task.priority" 
+            class="task-card" 
+            cdkDrag>
+            <div class="task-title-row">
+              <span class="task-order">{{ i + 1 }}.</span> 
+              <span class="task-title">{{ task.title }}</span>
+              <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'ingenieriaAlta')"> 
+                <mat-icon class="icon-small-red">delete_outline</mat-icon>
+              </button>
             </div>
 
-            <div class="priority-header priority-Media">MEDIA PRIORIDAD</div>
-            <div cdkDropList
-                #ingenieriaMediaList="cdkDropList"
-                [cdkDropListData]="ingenieriaMedia"
-                [cdkDropListConnectedTo]="[ingenieriaAltaList, ingenieriaBajaList]"
-                (cdkDropListDropped)="onDrop($event)">
-                
-                <mat-card *ngFor="let task of ingenieriaMedia; let i = index" 
-                          [ngClass]="'priority-' + task.priority" 
-                          class="task-card" 
-                          cdkDrag>
-                    <div class="task-title-row">
-        <span class="task-order">{{ i + 1 }}.</span> 
-        <span class="task-title">{{ task.title }}</span>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'ingenieriaMedia')"> 
-            <mat-icon class="icon-small-red">delete_outline</mat-icon>
-        </button>
-    </div>
-
-   <div class="task-tags-row">
-        <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
-            {{ task.priority | uppercase }}
-        </span>
-        
-        <span class="tag tag-area">
-            {{ task.area | titlecase }}
-        </span>
-    </div>
-
-    <div class="task-description">
-        {{ task.description }}
-    </div>
-
-    <div class="task-footer-row">
-        <span class="detail-due-date">
-            <mat-icon class="icon-small">calendar_today</mat-icon> 
-            {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
-
-        <span class="detail-pay">
-            S/ {{ task.estimatedPay }}
-        </span>
-    </div>
-                </mat-card>
+            <div class="task-tags-row">
+              <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
+                {{ task.priority | uppercase }}
+              </span>
+              
+              <span class="tag tag-area">
+                {{ task.area | titlecase }}
+              </span>
             </div>
 
-            <div class="priority-header priority-Baja">BAJA PRIORIDAD</div>
-            <div cdkDropList
-                #ingenieriaBajaList="cdkDropList"
-                [cdkDropListData]="ingenieriaBaja"
-                [cdkDropListConnectedTo]="[ingenieriaAltaList, ingenieriaMediaList]"
-                (cdkDropListDropped)="onDrop($event)">
-                
-                <mat-card *ngFor="let task of ingenieriaBaja; let i = index" 
-                          [ngClass]="'priority-' + task.priority" 
-                          class="task-card" 
-                          cdkDrag>
-                    <div class="task-title-row">
-        <span class="task-order">{{ i + 1 }}.</span> 
-        <span class="task-title">{{ task.title }}</span>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'ingenieriaBaja')"> 
-            <mat-icon class="icon-small-red">delete_outline</mat-icon>
-        </button>
-    </div>
-
-   <div class="task-tags-row">
-        <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
-            {{ task.priority | uppercase }}
-        </span>
-        
-        <span class="tag tag-area">
-            {{ task.area | titlecase }}
-        </span>
-    </div>
-
-    <div class="task-description">
-        {{ task.description }}
-    </div>
-
-    <div class="task-footer-row">
-        <span class="detail-due-date">
-            <mat-icon class="icon-small">calendar_today</mat-icon> 
-            {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
-
-        <span class="detail-pay">
-            S/ {{ task.estimatedPay }}
-        </span>
-    </div>
-                </mat-card>
+            <div class="task-description">
+              {{ task.description }}
             </div>
+
+            <div class="task-footer-row">
+              <span class="detail-due-date">
+                <mat-icon class="icon-small">calendar_today</mat-icon> 
+                {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
+
+              <span class="detail-pay">
+                S/ {{ task.estimatedPay }}
+              </span>
+            </div>
+            <div class="task-status-indicator" [ngClass]="'status-' + task.status">
+              <mat-icon>{{ getStatusIcon(task.status) }}</mat-icon>
+              <span>{{ getStatusLabel(task.status) }}</span>
+            </div>
+          </mat-card>
         </div>
 
-        <div class="column">
-            <h2>LOGÍSTICA - {{ logisticaAlta.length + logisticaMedia.length + logisticaBaja.length }}</h2>
-
-            <div class="priority-header priority-Alta">ALTA PRIORIDAD</div>
-            <div cdkDropList 
-                #logisticaAltaList="cdkDropList"
-                [cdkDropListData]="logisticaAlta"
-                [cdkDropListConnectedTo]="[logisticaMediaList, logisticaBajaList]"
-                (cdkDropListDropped)="onDrop($event)">
-                
-                <mat-card *ngFor="let task of logisticaAlta; let i = index" 
-                          [ngClass]="'priority-' + task.priority" 
-                          class="task-card" 
-                          cdkDrag>
-                   <div class="task-title-row">
-        <span class="task-order">{{ i + 1 }}.</span> 
-        <span class="task-title">{{ task.title }}</span>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'logisticaAlta')"> 
-            <mat-icon class="icon-small-red">delete_outline</mat-icon>
-        </button>
-    </div>
-
-   <div class="task-tags-row">
-        <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
-            {{ task.priority | uppercase }}
-        </span>
-        
-        <span class="tag tag-area">
-            {{ task.area | titlecase }}
-        </span>
-    </div>
-
-    <div class="task-description">
-        {{ task.description }}
-    </div>
-
-    <div class="task-footer-row">
-        <span class="detail-due-date">
-            <mat-icon class="icon-small">calendar_today</mat-icon> 
-            {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
-
-        <span class="detail-pay">
-            S/ {{ task.estimatedPay }}
-        </span>
-    </div>
-                </mat-card>
+        <div class="priority-header priority-Media">MEDIA PRIORIDAD</div>
+        <div cdkDropList
+          #ingenieriaMediaList="cdkDropList"
+          [cdkDropListData]="ingenieriaMedia"
+          [cdkDropListConnectedTo]="[ingenieriaAltaList, ingenieriaBajaList]"
+          (cdkDropListDropped)="onDrop($event)">
+          
+          <mat-card *ngFor="let task of ingenieriaMedia; let i = index" 
+            [ngClass]="'priority-' + task.priority" 
+            class="task-card" 
+            cdkDrag>
+            <div class="task-title-row">
+              <span class="task-order">{{ i + 1 }}.</span> 
+              <span class="task-title">{{ task.title }}</span>
+              <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'ingenieriaMedia')"> 
+                <mat-icon class="icon-small-red">delete_outline</mat-icon>
+              </button>
             </div>
 
-            <div class="priority-header priority-Media">MEDIA PRIORIDAD</div>
-            <div cdkDropList
-                #logisticaMediaList="cdkDropList"
-                [cdkDropListData]="logisticaMedia"
-                [cdkDropListConnectedTo]="[logisticaAltaList, logisticaBajaList]"
-                (cdkDropListDropped)="onDrop($event)">
-                
-                <mat-card *ngFor="let task of logisticaMedia; let i = index" 
-                          [ngClass]="'priority-' + task.priority" 
-                          class="task-card" 
-                          cdkDrag>
-                    <div class="task-title-row">
-        <span class="task-order">{{ i + 1 }}.</span> 
-        <span class="task-title">{{ task.title }}</span>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'logisticaMedia')"> 
-            <mat-icon class="icon-small-red">delete_outline</mat-icon>
-        </button>
-    </div>
-
-   <div class="task-tags-row">
-        <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
-            {{ task.priority | uppercase }}
-        </span>
-        
-        <span class="tag tag-area">
-            {{ task.area | titlecase }}
-        </span>
-    </div>
-
-    <div class="task-description">
-        {{ task.description }}
-    </div>
-
-    <div class="task-footer-row">
-        <span class="detail-due-date">
-            <mat-icon class="icon-small">calendar_today</mat-icon> 
-            {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
-
-        <span class="detail-pay">
-            S/ {{ task.estimatedPay }}
-        </span>
-    </div>
-                </mat-card>
+            <div class="task-tags-row">
+              <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
+                {{ task.priority | uppercase }}
+              </span>
+              
+              <span class="tag tag-area">
+                {{ task.area | titlecase }}
+              </span>
             </div>
 
-            <div class="priority-header priority-Baja">BAJA PRIORIDAD</div>
-            <div cdkDropList
-                #logisticaBajaList="cdkDropList"
-                [cdkDropListData]="logisticaBaja"
-                [cdkDropListConnectedTo]="[logisticaAltaList, logisticaMediaList]"
-                (cdkDropListDropped)="onDrop($event)">
-                
-                <mat-card *ngFor="let task of logisticaBaja; let i = index" 
-                          [ngClass]="'priority-' + task.priority" 
-                          class="task-card" 
-                          cdkDrag>
-                   <div class="task-title-row">
-        <span class="task-order">{{ i + 1 }}.</span> 
-        <span class="task-title">{{ task.title }}</span>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'logisticaBaja')"> 
-            <mat-icon class="icon-small-red">delete_outline</mat-icon>
-        </button>
-    </div>
-
-   <div class="task-tags-row">
-        <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
-            {{ task.priority | uppercase }}
-        </span>
-        
-        <span class="tag tag-area">
-            {{ task.area | titlecase }}
-        </span>
-    </div>
-
-    <div class="task-description">
-        {{ task.description }}
-    </div>
-
-    <div class="task-footer-row">
-        <span class="detail-due-date">
-            <mat-icon class="icon-small">calendar_today</mat-icon> 
-            {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
-
-        <span class="detail-pay">
-            S/ {{ task.estimatedPay }}
-        </span>
-    </div>
-                </mat-card>
+            <div class="task-description">
+              {{ task.description }}
             </div>
+
+            <div class="task-footer-row">
+              <span class="detail-due-date">
+                <mat-icon class="icon-small">calendar_today</mat-icon> 
+                {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
+
+              <span class="detail-pay">
+                S/ {{ task.estimatedPay }}
+              </span>
+            </div>
+            <div class="task-status-indicator" [ngClass]="'status-' + task.status">
+              <mat-icon>{{ getStatusIcon(task.status) }}</mat-icon>
+              <span>{{ getStatusLabel(task.status) }}</span>
+            </div>
+          </mat-card>
         </div>
 
-        <div class="column">
-            <h2>MARKETING - {{ marketingAlta.length + marketingMedia.length + marketingBaja.length }}</h2>
-
-            <div class="priority-header priority-Alta">ALTA PRIORIDAD</div>
-            <div cdkDropList 
-                #marketingAltaList="cdkDropList"
-                [cdkDropListData]="marketingAlta"
-                [cdkDropListConnectedTo]="[marketingMediaList, marketingBajaList]"
-                (cdkDropListDropped)="onDrop($event)">
-                
-                <mat-card *ngFor="let task of marketingAlta; let i = index" 
-                          [ngClass]="'priority-' + task.priority" 
-                          class="task-card" 
-                          cdkDrag>
-                   <div class="task-title-row">
-        <span class="task-order">{{ i + 1 }}.</span> 
-        <span class="task-title">{{ task.title }}</span>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'marketingAlta')"> 
-            <mat-icon class="icon-small-red">delete_outline</mat-icon>
-        </button>
-    </div>
-
-   <div class="task-tags-row">
-        <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
-            {{ task.priority | uppercase }}
-        </span>
-        
-        <span class="tag tag-area">
-            {{ task.area | titlecase }}
-        </span>
-    </div>
-
-    <div class="task-description">
-        {{ task.description }}
-    </div>
-
-    <div class="task-footer-row">
-        <span class="detail-due-date">
-            <mat-icon class="icon-small">calendar_today</mat-icon> 
-            {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
-
-        <span class="detail-pay">
-            S/ {{ task.estimatedPay }}
-        </span>
-    </div>
-                </mat-card>
+        <div class="priority-header priority-Baja">BAJA PRIORIDAD</div>
+        <div cdkDropList
+          #ingenieriaBajaList="cdkDropList"
+          [cdkDropListData]="ingenieriaBaja"
+          [cdkDropListConnectedTo]="[ingenieriaAltaList, ingenieriaMediaList]"
+          (cdkDropListDropped)="onDrop($event)">
+          
+          <mat-card *ngFor="let task of ingenieriaBaja; let i = index" 
+            [ngClass]="'priority-' + task.priority" 
+            class="task-card" 
+            cdkDrag>
+            <div class="task-title-row">
+              <span class="task-order">{{ i + 1 }}.</span> 
+              <span class="task-title">{{ task.title }}</span>
+              <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'ingenieriaBaja')"> 
+                <mat-icon class="icon-small-red">delete_outline</mat-icon>
+              </button>
             </div>
 
-            <div class="priority-header priority-Media">MEDIA PRIORIDAD</div>
-            <div cdkDropList
-                #marketingMediaList="cdkDropList"
-                [cdkDropListData]="marketingMedia"
-                [cdkDropListConnectedTo]="[marketingAltaList, marketingBajaList]"
-                (cdkDropListDropped)="onDrop($event)">
-                
-                <mat-card *ngFor="let task of marketingMedia; let i = index" 
-                          [ngClass]="'priority-' + task.priority" 
-                          class="task-card" 
-                          cdkDrag>
-                   <div class="task-title-row">
-        <span class="task-order">{{ i + 1 }}.</span> 
-        <span class="task-title">{{ task.title }}</span>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'marketingMedia')"> 
-            <mat-icon class="icon-small-red">delete_outline</mat-icon>
-        </button>
-    </div>
-
-   <div class="task-tags-row">
-        <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
-            {{ task.priority | uppercase }}
-        </span>
-        
-        <span class="tag tag-area">
-            {{ task.area | titlecase }}
-        </span>
-    </div>
-
-    <div class="task-description">
-        {{ task.description }}
-    </div>
-
-    <div class="task-footer-row">
-        <span class="detail-due-date">
-            <mat-icon class="icon-small">calendar_today</mat-icon> 
-            {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
-
-        <span class="detail-pay">
-            S/ {{ task.estimatedPay }}
-        </span>
-    </div>
-                </mat-card>
+            <div class="task-tags-row">
+              <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
+                {{ task.priority | uppercase }}
+              </span>
+              
+              <span class="tag tag-area">
+                {{ task.area | titlecase }}
+              </span>
             </div>
 
-            <div class="priority-header priority-Baja">BAJA PRIORIDAD</div>
-            <div cdkDropList
-                #marketingBajaList="cdkDropList"
-                [cdkDropListData]="marketingBaja"
-                [cdkDropListConnectedTo]="[marketingAltaList, marketingMediaList]"
-                (cdkDropListDropped)="onDrop($event)">
-                
-                <mat-card *ngFor="let task of marketingBaja; let i = index" 
-                          [ngClass]="'priority-' + task.priority" 
-                          class="task-card" 
-                          cdkDrag>
-                   <div class="task-title-row">
-        <span class="task-order">{{ i + 1 }}.</span> 
-        <span class="task-title">{{ task.title }}</span>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'marketingBaja')"> 
-            <mat-icon class="icon-small-red">delete_outline</mat-icon>
-        </button>
-    </div>
-
-   <div class="task-tags-row">
-        <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
-            {{ task.priority | uppercase }}
-        </span>
-        
-        <span class="tag tag-area">
-            {{ task.area | titlecase }}
-        </span>
-    </div>
-
-    <div class="task-description">
-        {{ task.description }}
-    </div>
-
-    <div class="task-footer-row">
-        <span class="detail-due-date">
-            <mat-icon class="icon-small">calendar_today</mat-icon> 
-            {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
-
-        <span class="detail-pay">
-            S/ {{ task.estimatedPay }}
-        </span>
-    </div>
-                </mat-card>
+            <div class="task-description">
+              {{ task.description }}
             </div>
+
+            <div class="task-footer-row">
+              <span class="detail-due-date">
+                <mat-icon class="icon-small">calendar_today</mat-icon> 
+                {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
+
+              <span class="detail-pay">
+                S/ {{ task.estimatedPay }}
+              </span>
+            </div>
+            <div class="task-status-indicator" [ngClass]="'status-' + task.status">
+              <mat-icon>{{ getStatusIcon(task.status) }}</mat-icon>
+              <span>{{ getStatusLabel(task.status) }}</span>
+            </div>
+          </mat-card>
         </div>
-    </div>
-</div>
+      </div>
 
-  <!-- User Dashboard View -->
+      <div class="column">
+        <h2>LOGÍSTICA - {{ logisticaAlta.length + logisticaMedia.length + logisticaBaja.length }}</h2>
+
+        <div class="priority-header priority-Alta">ALTA PRIORIDAD</div>
+        <div cdkDropList 
+          #logisticaAltaList="cdkDropList"
+          [cdkDropListData]="logisticaAlta"
+          [cdkDropListConnectedTo]="[logisticaMediaList, logisticaBajaList]"
+          (cdkDropListDropped)="onDrop($event)">
+          
+          <mat-card *ngFor="let task of logisticaAlta; let i = index" 
+            [ngClass]="'priority-' + task.priority" 
+            class="task-card" 
+            cdkDrag>
+            <div class="task-title-row">
+              <span class="task-order">{{ i + 1 }}.</span> 
+              <span class="task-title">{{ task.title }}</span>
+              <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'logisticaAlta')"> 
+                <mat-icon class="icon-small-red">delete_outline</mat-icon>
+              </button>
+            </div>
+
+            <div class="task-tags-row">
+              <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
+                {{ task.priority | uppercase }}
+              </span>
+              
+              <span class="tag tag-area">
+                {{ task.area | titlecase }}
+              </span>
+            </div>
+
+            <div class="task-description">
+              {{ task.description }}
+            </div>
+
+            <div class="task-footer-row">
+              <span class="detail-due-date">
+                <mat-icon class="icon-small">calendar_today</mat-icon> 
+                {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
+
+              <span class="detail-pay">
+                S/ {{ task.estimatedPay }}
+              </span>
+            </div>
+            <div class="task-status-indicator" [ngClass]="'status-' + task.status">
+              <mat-icon>{{ getStatusIcon(task.status) }}</mat-icon>
+              <span>{{ getStatusLabel(task.status) }}</span>
+            </div>
+          </mat-card>
+        </div>
+
+        <div class="priority-header priority-Media">MEDIA PRIORIDAD</div>
+        <div cdkDropList
+          #logisticaMediaList="cdkDropList"
+          [cdkDropListData]="logisticaMedia"
+          [cdkDropListConnectedTo]="[logisticaAltaList, logisticaBajaList]"
+          (cdkDropListDropped)="onDrop($event)">
+          
+          <mat-card *ngFor="let task of logisticaMedia; let i = index" 
+            [ngClass]="'priority-' + task.priority" 
+            class="task-card" 
+            cdkDrag>
+            <div class="task-title-row">
+              <span class="task-order">{{ i + 1 }}.</span> 
+              <span class="task-title">{{ task.title }}</span>
+              <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'logisticaMedia')"> 
+                <mat-icon class="icon-small-red">delete_outline</mat-icon>
+              </button>
+            </div>
+
+            <div class="task-tags-row">
+              <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
+                {{ task.priority | uppercase }}
+              </span>
+              
+              <span class="tag tag-area">
+                {{ task.area | titlecase }}
+              </span>
+            </div>
+
+            <div class="task-description">
+              {{ task.description }}
+            </div>
+
+            <div class="task-footer-row">
+              <span class="detail-due-date">
+                <mat-icon class="icon-small">calendar_today</mat-icon> 
+                {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
+
+              <span class="detail-pay">
+                S/ {{ task.estimatedPay }}
+              </span>
+            </div>
+            <div class="task-status-indicator" [ngClass]="'status-' + task.status">
+              <mat-icon>{{ getStatusIcon(task.status) }}</mat-icon>
+              <span>{{ getStatusLabel(task.status) }}</span>
+            </div>
+          </mat-card>
+        </div>
+
+        <div class="priority-header priority-Baja">BAJA PRIORIDAD</div>
+        <div cdkDropList
+          #logisticaBajaList="cdkDropList"
+          [cdkDropListData]="logisticaBaja"
+          [cdkDropListConnectedTo]="[logisticaAltaList, logisticaMediaList]"
+          (cdkDropListDropped)="onDrop($event)">
+          
+          <mat-card *ngFor="let task of logisticaBaja; let i = index" 
+            [ngClass]="'priority-' + task.priority" 
+            class="task-card" 
+            cdkDrag>
+            <div class="task-title-row">
+              <span class="task-order">{{ i + 1 }}.</span> 
+              <span class="task-title">{{ task.title }}</span>
+              <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'logisticaBaja')"> 
+                <mat-icon class="icon-small-red">delete_outline</mat-icon>
+              </button>
+            </div>
+
+            <div class="task-tags-row">
+              <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
+                {{ task.priority | uppercase }}
+              </span>
+              
+              <span class="tag tag-area">
+                {{ task.area | titlecase }}
+              </span>
+            </div>
+
+            <div class="task-description">
+              {{ task.description }}
+            </div>
+
+            <div class="task-footer-row">
+              <span class="detail-due-date">
+                <mat-icon class="icon-small">calendar_today</mat-icon> 
+                {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
+
+              <span class="detail-pay">
+                S/ {{ task.estimatedPay }}
+              </span>
+            </div>
+            <div class="task-status-indicator" [ngClass]="'status-' + task.status">
+              <mat-icon>{{ getStatusIcon(task.status) }}</mat-icon>
+              <span>{{ getStatusLabel(task.status) }}</span>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+
+      <div class="column">
+        <h2>MARKETING - {{ marketingAlta.length + marketingMedia.length + marketingBaja.length }}</h2>
+
+        <div class="priority-header priority-Alta">ALTA PRIORIDAD</div>
+        <div cdkDropList 
+          #marketingAltaList="cdkDropList"
+          [cdkDropListData]="marketingAlta"
+          [cdkDropListConnectedTo]="[marketingMediaList, marketingBajaList]"
+          (cdkDropListDropped)="onDrop($event)">
+          
+          <mat-card *ngFor="let task of marketingAlta; let i = index" 
+            [ngClass]="'priority-' + task.priority" 
+            class="task-card" 
+            cdkDrag>
+            <div class="task-title-row">
+              <span class="task-order">{{ i + 1 }}.</span> 
+              <span class="task-title">{{ task.title }}</span>
+              <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'marketingAlta')"> 
+                <mat-icon class="icon-small-red">delete_outline</mat-icon>
+              </button>
+            </div>
+
+            <div class="task-tags-row">
+              <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
+                {{ task.priority | uppercase }}
+              </span>
+              
+              <span class="tag tag-area">
+                {{ task.area | titlecase }}
+              </span>
+            </div>
+
+            <div class="task-description">
+              {{ task.description }}
+            </div>
+
+            <div class="task-footer-row">
+              <span class="detail-due-date">
+                <mat-icon class="icon-small">calendar_today</mat-icon> 
+                {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
+
+              <span class="detail-pay">
+                S/ {{ task.estimatedPay }}
+              </span>
+            </div>
+            <div class="task-status-indicator" [ngClass]="'status-' + task.status">
+              <mat-icon>{{ getStatusIcon(task.status) }}</mat-icon>
+              <span>{{ getStatusLabel(task.status) }}</span>
+            </div>
+          </mat-card>
+        </div>
+
+        <div class="priority-header priority-Media">MEDIA PRIORIDAD</div>
+        <div cdkDropList
+          #marketingMediaList="cdkDropList"
+          [cdkDropListData]="marketingMedia"
+          [cdkDropListConnectedTo]="[marketingAltaList, marketingBajaList]"
+          (cdkDropListDropped)="onDrop($event)">
+          
+          <mat-card *ngFor="let task of marketingMedia; let i = index" 
+            [ngClass]="'priority-' + task.priority" 
+            class="task-card" 
+            cdkDrag>
+            <div class="task-title-row">
+              <span class="task-order">{{ i + 1 }}.</span> 
+              <span class="task-title">{{ task.title }}</span>
+              <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'marketingMedia')"> 
+                <mat-icon class="icon-small-red">delete_outline</mat-icon>
+              </button>
+            </div>
+
+            <div class="task-tags-row">
+              <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
+                {{ task.priority | uppercase }}
+              </span>
+              
+              <span class="tag tag-area">
+                {{ task.area | titlecase }}
+              </span>
+            </div>
+
+            <div class="task-description">
+              {{ task.description }}
+            </div>
+
+            <div class="task-footer-row">
+              <span class="detail-due-date">
+                <mat-icon class="icon-small">calendar_today</mat-icon> 
+                {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
+
+              <span class="detail-pay">
+                S/ {{ task.estimatedPay }}
+              </span>
+            </div>
+            <div class="task-status-indicator" [ngClass]="'status-' + task.status">
+              <mat-icon>{{ getStatusIcon(task.status) }}</mat-icon>
+              <span>{{ getStatusLabel(task.status) }}</span>
+            </div>
+          </mat-card>
+        </div>
+
+        <div class="priority-header priority-Baja">BAJA PRIORIDAD</div>
+        <div cdkDropList
+          #marketingBajaList="cdkDropList"
+          [cdkDropListData]="marketingBaja"
+          [cdkDropListConnectedTo]="[marketingAltaList, marketingMediaList]"
+          (cdkDropListDropped)="onDrop($event)">
+          
+          <mat-card *ngFor="let task of marketingBaja; let i = index" 
+            [ngClass]="'priority-' + task.priority" 
+            class="task-card" 
+            cdkDrag>
+            <div class="task-title-row">
+              <span class="task-order">{{ i + 1 }}.</span> 
+              <span class="task-title">{{ task.title }}</span>
+              <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'marketingBaja')"> 
+                <mat-icon class="icon-small-red">delete_outline</mat-icon>
+              </button>
+            </div>
+
+            <div class="task-tags-row">
+              <span class="tag tag-priority" [ngClass]="'tag-' + task.priority">
+                {{ task.priority | uppercase }}
+              </span>
+              
+              <span class="tag tag-area">
+                {{ task.area | titlecase }}
+              </span>
+            </div>
+
+            <div class="task-description">
+              {{ task.description }}
+            </div>
+
+            <div class="task-footer-row">
+              <span class="detail-due-date">
+                <mat-icon class="icon-small">calendar_today</mat-icon> 
+                {{ task.dueDate | date:'dd/MM/yyyy' }} </span>
+
+              <span class="detail-pay">
+                S/ {{ task.estimatedPay }}
+              </span>
+            </div>
+            <div class="task-status-indicator" [ngClass]="'status-' + task.status">
+              <mat-icon>{{ getStatusIcon(task.status) }}</mat-icon>
+              <span>{{ getStatusLabel(task.status) }}</span>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div *ngIf="showUserDashboard" class="user-view-wrapper">
     <app-user-dashboard 
-      [userName]="'Juan García'"
-      [userArea]="'Ingeniería'"
-      [tasks]="userTasks"
+      [userName]="userName"
+      [userArea]="userArea"
+      [tasks]="getUserTasks()"
       (taskStatusChanged)="onUserTaskStatusChanged($event)"
       (taskDetailsRequested)="onViewTaskDetails($event)">
     </app-user-dashboard>
