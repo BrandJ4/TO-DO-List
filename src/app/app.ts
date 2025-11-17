@@ -4,13 +4,11 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 
 
-import { 
-  CdkDragDrop, 
-  DragDropModule, 
-  moveItemInArray, 
-  transferArrayItem 
-} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
+import { MatSelectModule } from '@angular/material/select'; // Nuevo
+import { MatDatepickerModule } from '@angular/material/datepicker'; // Nuevo
+import { MatNativeDateModule } from '@angular/material/core'; // Necesario para Datepicker
 
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -21,9 +19,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component'; 
 
 
+// Definiciones de tipos para evitar errores
+export type Priority = 'Alta' | 'Media' | 'Baja';
+export type Area = 'INGENIERÍA' | 'LOGÍSTICA' | 'MARKETING';
+
 export interface ITask {
   id: number;
   title: string;
+  area: Area;         // Nuevo: Área a la que pertenece
+  priority: Priority; // Nuevo: Nivel de prioridad
+  dueDate: string;    // Nuevo: Fecha de entrega (formato string 'YYYY-MM-DD')
+  estimatedPay: number; // Nuevo: Pago estimado
 }
 
 @Component({
@@ -38,6 +44,9 @@ export interface ITask {
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatSelectModule,      // Añadir
+    MatDatepickerModule,  // Añadir
+    MatNativeDateModule,  // Añadir
     UserDashboardComponent
   ],
   templateUrl: './app.html',
@@ -50,21 +59,24 @@ export class App {
   
   private fb = inject(FormBuilder);
 
-  
+  minDate: Date = new Date();
+
+  // Opciones de las listas desplegables para el HTML
+  availableAreas: Area[] = ['INGENIERÍA', 'LOGÍSTICA', 'MARKETING'];
+  availablePriorities: Priority[] = ['Alta', 'Media', 'Baja'];
+
   taskForm = this.fb.group({
-    title: ['', Validators.required]
+    title: ['', Validators.required],
+    area: [this.availableAreas[0], Validators.required], // Valor inicial: INGENIERÍA
+    priority: [this.availablePriorities[0], Validators.required], // Valor inicial: Alta
+    dueDate: ['', Validators.required], // Requiere una fecha
+    estimatedPay: [0, [Validators.required, Validators.min(0)]] // Pago mínimo 0
   });
 
  
-  todo: ITask[] = [
-    
-  ];
-
-  inProgress: ITask[] = [];
-
-  done: ITask[] = [
-    
-  ];
+ingenieria: ITask[] = []; // Reemplaza a 'todo'
+logistica: ITask[] = []; // Reemplaza a 'inProgress'
+marketing: ITask[] = []; // Reemplaza a 'done'
 
   // Mock data for user dashboard
   userTasks = [
@@ -104,19 +116,48 @@ export class App {
 
 // 1. Agregar Tarea
 addTask(): void {
-    if (this.taskForm.valid) {
-      const newTitle = this.taskForm.value.title;
-      // Añadido chequeo de newTitle por si el FormBuilder devuelve null/undefined
-      if (newTitle) { 
-        const newTask: ITask = {
-          id: Date.now(),
-          title: newTitle
-        };
-        this.todo.unshift(newTask);
-        this.taskForm.reset();
+  if (this.taskForm.valid) {
+    const { title, area, priority, dueDate } = this.taskForm.value;
+    const pay: number = Number(this.taskForm.value.estimatedPay ?? 0);
+
+    if (title && area && priority && dueDate) {
+      const newTask: ITask = {
+        id: Date.now(),
+        title: title,
+        area: area as Area,
+        priority: priority as Priority,
+        dueDate: dueDate,
+        estimatedPay: pay
+      };
+
+      // *** LÓGICA DE ASIGNACIÓN POR ÁREA ***
+      switch (area) {
+        case 'INGENIERÍA':
+          this.ingenieria.unshift(newTask);
+          break;
+        case 'LOGÍSTICA':
+          this.logistica.unshift(newTask);
+          break;
+        case 'MARKETING':
+          this.marketing.unshift(newTask);
+          break;
+        default:
+          // Si por alguna razón el área no coincide, la pone en Ingeniería
+          this.ingenieria.unshift(newTask);
+          break;
       }
+      // *************************************
+
+      this.taskForm.reset({
+          title: '',
+          area: this.availableAreas[0],
+          priority: this.availablePriorities[0],
+          dueDate: '',
+          estimatedPay: 0
+      });
     }
   }
+} 
 
   // 2. Manejar Arrastre (Drag and Drop)
   onDrop(event: CdkDragDrop<ITask[]>): void { // <-- **MÉTODO onDrop CORREGIDO Y EN SU LUGAR**
@@ -139,19 +180,19 @@ addTask(): void {
   }
 
 // 3. Eliminar Tarea
-  deleteTask(taskToDelete: ITask, listName: 'todo' | 'inProgress' | 'done'): void {
-    switch (listName) {
-      case 'todo':
-        this.todo = this.todo.filter(task => task.id !== taskToDelete.id);
-        break;
-      case 'inProgress':
-        this.inProgress = this.inProgress.filter(task => task.id !== taskToDelete.id);
-        break;
-      case 'done':
-        this.done = this.done.filter(task => task.id !== taskToDelete.id);
-        break;
-    }
+  deleteTask(taskToDelete: ITask, listName: 'ingenieria' | 'logistica' | 'marketing'): void {
+  switch (listName) {
+    case 'ingenieria':
+      this.ingenieria = this.ingenieria.filter(task => task.id !== taskToDelete.id);
+      break;
+    case 'logistica':
+      this.logistica = this.logistica.filter(task => task.id !== taskToDelete.id);
+      break;
+    case 'marketing':
+      this.marketing = this.marketing.filter(task => task.id !== taskToDelete.id);
+      break;
   }
+}
 
  onUserTaskStatusChanged(event: { taskId: number; newStatus: string }): void {
     const task = this.userTasks.find(t => t.id === event.taskId);

@@ -70,7 +70,12 @@
 }
 
 .task-form mat-form-field {
-  width: 100%;
+  /* Define un margen para separarlo del siguiente elemento */
+    margin-bottom: 20px; 
+    
+    /* Asegúrate de que ocupen el ancho completo del contenedor (opcional) */
+    width: 100%;
+    display: block;
 }
 
 .board-container {

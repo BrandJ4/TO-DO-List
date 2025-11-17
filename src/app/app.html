@@ -17,10 +17,46 @@
       <h2>Administrador ✍</h2>
       
       <form class="task-form" [formGroup]="taskForm" (ngSubmit)="addTask()">
-        <mat-form-field appearance="outline">
-          <mat-label>Nueva tarea</mat-label>
-          <input matInput formControlName="title" placeholder="Hoy haremos...">
-        </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Título de la tarea</mat-label>
+                <input matInput formControlName="title" placeholder="Ej: Implementar Login">
+                <mat-error *ngIf="taskForm.get('title')?.hasError('required')">Título requerido</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Área de Trabajo</mat-label>
+                <mat-select formControlName="area">
+                    <mat-option *ngFor="let area of availableAreas" [value]="area">
+                        {{ area }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="taskForm.get('area')?.hasError('required')">Área requerida</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Prioridad</mat-label>
+                <mat-select formControlName="priority">
+                    <mat-option *ngFor="let priority of availablePriorities" [value]="priority">
+                        {{ priority }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="taskForm.get('priority')?.hasError('required')">Prioridad requerida</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Fecha de Entrega</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="dueDate" [min]="minDate">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="taskForm.get('dueDate')?.hasError('required')">Fecha requerida</mat-error>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+                <mat-label>Pago Estimado (S/.)</mat-label>
+                <input matInput type="number" formControlName="estimatedPay" min="0">
+                <mat-error *ngIf="taskForm.get('estimatedPay')?.hasError('required')">Pago requerido</mat-error>
+                <mat-error *ngIf="taskForm.get('estimatedPay')?.hasError('min')">Debe ser 0 o más</mat-error>
+            </mat-form-field>
         
         <button mat-flat-button color="primary" type="submit" [disabled]="!taskForm.valid">
           Agregar
@@ -31,14 +67,14 @@
       <div class="column"
            cdkDropList
            #todoList="cdkDropList"
-           [cdkDropListData]="todo"
+           [cdkDropListData]="ingenieria"
            [cdkDropListConnectedTo]="[inProgressList, doneList]"
            (cdkDropListDropped)="onDrop($event)">
         
-        <h2>Ingeniería - {{todo.length}}</h2>
-        <mat-card *ngFor="let task of todo" class="task-card" cdkDrag>
+        <h2>Ingeniería - {{ingenieria.length}}</h2>
+        <mat-card *ngFor="let task of ingenieria" class="task-card" cdkDrag>
           <span>{{ task.title }}</span>
-          <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'todo')">
+          <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'ingenieria')">
             <mat-icon>delete_outline</mat-icon>
           </button>
         </mat-card>
@@ -47,14 +83,14 @@
       <div class="column"
            cdkDropList
            #inProgressList="cdkDropList"
-           [cdkDropListData]="inProgress"
+           [cdkDropListData]="logistica"
            [cdkDropListConnectedTo]="[todoList, doneList]"
            (cdkDropListDropped)="onDrop($event)">
 
-        <h2>Logística - {{inProgress.length}}</h2>
-        <mat-card *ngFor="let task of inProgress" class="task-card" cdkDrag>
+        <h2>Logística - {{logistica.length}}</h2>
+        <mat-card *ngFor="let task of logistica" class="task-card" cdkDrag>
           <span>{{ task.title }}</span>
-          <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'inProgress')">
+          <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'logistica')">
             <mat-icon>delete_outline</mat-icon>
           </button>
         </mat-card>
@@ -63,14 +99,14 @@
       <div class="column"
            cdkDropList
            #doneList="cdkDropList"
-           [cdkDropListData]="done"
+           [cdkDropListData]="marketing"
            [cdkDropListConnectedTo]="[todoList, inProgressList]"
            (cdkDropListDropped)="onDrop($event)">
 
-        <h2>Marketing - {{done.length}}</h2>
-        <mat-card *ngFor="let task of done" class="task-card" cdkDrag>
+        <h2>Marketing - {{marketing.length}}</h2>
+        <mat-card *ngFor="let task of marketing" class="task-card" cdkDrag>
           <span>{{ task.title }}</span>
-          <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'done')">
+          <button mat-icon-button class="delete-button" (click)="deleteTask(task, 'marketing')">
             <mat-icon>delete_outline</mat-icon>
           </button>
         </mat-card>
