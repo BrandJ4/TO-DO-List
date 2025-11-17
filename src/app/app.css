@@ -46,21 +46,23 @@
 /* Admin View */
 .page-wrapper {
   display: flex;
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    flex: 1;
+    /* <<-- Añadir gap para separar el form del board -->> */
+    gap: 20px;
 }
 
 .form-container {
-  width: 25%;
-  min-width: 250px;
-  padding: 15px;
-  margin-right: 20px;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  align-self: flex-start;
+    width: 300px; /* <<-- Definir un ancho fijo en píxeles es más seguro que el 25% -->> */
+    min-width: 280px;
+    padding: 15px;
+    /* margin-right: 20px; se elimina por el 'gap' en .page-wrapper */
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* <<-- Evita que se encoja -->> */
+    height: fit-content; /* Asegura que no ocupe todo el alto, solo lo necesario */
 }
 
 .form-container h2 {
@@ -78,14 +80,97 @@
     display: block;
 }
 
+.task-order {
+    font-weight: bold;
+    color: #555;
+    margin-right: 10px;
+    /* Esto es clave para que el número quede a la izquierda del título */
+    flex-shrink: 0; 
+}
+.task-card > span:first-of-type {
+    flex-grow: 1;
+    font-weight: 500;
+    color: #212121;
+}
+/* Estilo para los detalles (opcional) */
+.task-details {
+    width: 100%; /* Ocupa la línea de abajo */
+    font-size: 0.85em;
+    color: #777;
+    margin-top: 5px;
+}
+
+.task-details span {
+    margin-right: 15px;
+}
+
+/* Estilo general para los divisores de prioridad estáticos */
+.priority-header {
+    text-align: center;
+    padding: 8px 0;
+    margin-bottom: 10px;
+    font-weight: bold;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+}
+
+/* Colores de fondo basados en tu imagen */
+.priority-header.priority-Alta {
+    background-color: #d32f2f; /* Rojo fuerte */
+    color: white;
+}
+
+.priority-header.priority-Media {
+    background-color: #ffc107; /* Amarillo/Naranja */
+    color: #333; /* Texto oscuro para fondo claro */
+}
+
+.priority-header.priority-Baja {
+    background-color: #4caf50; /* Verde fuerte */
+    color: white;
+}
+
+/* Usamos la convención task-card.priority-X para asegurar que solo aplique a la tarjeta */
+.task-card.priority-Alta { 
+    border-left: 5px solid #d32f2f !important; /* Color Rojo Fuerte del header */
+    background-color: #fff0f0; /* Fondo muy claro para mejor contraste */
+}
+.task-card.priority-Media { 
+    border-left: 5px solid #ffc107 !important; /* Color Amarillo Fuerte del header */
+    background-color: #fffbe6; /* Fondo muy claro */
+}
+.task-card.priority-Baja { 
+    border-left: 5px solid #4caf50 !important; /* Color Verde Fuerte del header */
+    background-color: #f0fff0; /* Fondo muy claro */
+}
+
+
+/* Título de la tarea - Asegura que usa el nuevo selector */
+.task-title {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #333;
+    /* Permite que el título ocupe casi todo el espacio */
+    flex-grow: 1;
+}
+/* Si quieres que la prioridad se refleje en la tarjeta, puedes usar esto: */
+/* .priority-Alta { border-left: 5px solid #a41c1c !important; }
+.priority-Media { border-left: 5px solid #9e6c22 !important; }
+.priority-Baja { border-left: 5px solid #0d6e10 !important; } */
+
 .board-container {
   display: flex;
-  justify-content: space-between;
-  width: 75%;
+    /* justify-content: space-between; (Se elimina, el gap lo hace mejor) */
+    flex-grow: 1; /* <<-- Ocupa todo el espacio restante -->> */
+    gap: 20px;
+    /* width: 75%; se elimina por flex-grow */
+    overflow-x: auto; /* Útil para scroll horizontal si hay muchas columnas */
 }
 
 .column {
-  width: 32%;
+  flex-shrink: 0;
+  width: 420px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   padding: 15px;
@@ -102,21 +187,129 @@
 }
 
 .task-card {
-  margin-bottom: 10px;
-  background: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  word-wrap: break-word;
-  padding: 10px 15px;
+    flex-direction: column; /* La clave para apilar las filas */
+    gap: 8px; /* Espacio vertical entre filas de contenido */
+    
+    cursor: grab; /* Indicador visual de arrastre */
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+/* Fila del Título y el Botón de Eliminar */
+.task-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+/* .task-header-row {
+    display: flex;
+    align-items: center;
+    flex-basis: 75%; 
+} */
+
+/* Detalles (Fecha, Prioridad, Pago) */
+.task-details-row {
+    display: flex;
+    gap: 15px; /* Espacio entre los detalles */
+    width: 100%; /* Ocupa toda la línea inferior */
+    margin-top: 8px;
+    padding-top: 5px;
+    border-top: 1px solid #eee; /* Separador visual */
+    font-size: 0.85em;
+    color: #555;
+}
+.task-details-row span {
+    display: flex;
+    align-items: center;
+}
+/* Íconos pequeños dentro de los detalles */
+.icon-small {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+    color: #888;
 }
 
 .delete-button {
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
-  color: #888;
+ /* Mueve el botón de eliminar al final de la línea */
+    flex-shrink: 0;
+    align-self: flex-start;
+    padding: 0;
+    line-height: 1;
+}
+.icon-small-red {
+    color: #d32f2f; /* Rojo para el icono de eliminar/alerta */
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+/* Fila de Etiquetas (Tags) */
+.task-tags-row {
+    display: flex;
+    gap: 10px; /* Espacio entre las píldoras */
+    margin-bottom: 5px;
+}
+
+.tag {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+}
+
+/* Colores de las Píldoras de Prioridad */
+.tag-Alta {
+    background-color: #d32f2f; /* Rojo fuerte */
+}
+
+.tag-Media {
+    background-color: #ffc107; /* Amarillo/Naranja */
+    color: #333;
+}
+
+.tag-Baja {
+    background-color: #4caf50; /* Verde */
+}
+
+/* Etiqueta de Área (Usamos un color fijo, similar al violeta de tu modelo) */
+.tag-area {
+    background-color: #7b1fa2; /* Violeta/Morado */
+}
+
+/* Fila de Descripción */
+.task-description {
+    font-size: 0.9em;
+    color: #555;
+    /* Si la descripción es muy larga, la limitamos para mantener la tarjeta limpia */
+    max-height: 40px; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limita a 2 líneas */
+    -webkit-box-orient: vertical;
+    margin-bottom: 8px;
+}
+
+/* Fila de Detalles Inferiores (Footer) */
+.task-footer-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 8px;
+    border-top: 1px solid #eee; /* Separador */
+    font-size: 0.85em;
+    color: #555;
+}
+
+.detail-due-date, .detail-pay {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .cdk-drag-placeholder {
@@ -124,7 +317,13 @@
   border: 2px dashed #555;
   background: #fafafa;
 }
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
 
+.cdk-drop-list-dragging .task-card:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
 .cdk-drag-preview {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
